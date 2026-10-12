@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f5ef">
+    <meta name="description" content="Temukan karya artisan Nusantara di KaryaLokal.">
+    <title>KaryaLokal.id — Membeli karya, membawa pulang cerita</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="demo-strip">ETALASE DEMO <span aria-hidden="true">·</span> Katalog contoh, belum menerima pesanan</div>
+
+    <header class="site-header shell">
+        <a class="brand" href="#home" aria-label="KaryaLokal, beranda">
+            <img src="assets/karyalokal-mark.png" alt="">
+            <span>Karya<span class="brand-accent">Lokal</span><small>.id</small></span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navigasi utama">
+            <a class="nav-link active" href="#home">Beranda</a>
+            <a class="nav-link" href="#karya">Jelajahi karya</a>
+            <a class="nav-link" href="#cerita">Cerita kami</a>
+        </nav>
+
+        <div class="header-actions">
+            <label class="search-box" for="searchInput">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+                <input id="searchInput" type="search" placeholder="Cari karya..." autocomplete="off">
+            </label>
+            <button class="cart-trigger" id="cartTrigger" type="button" aria-label="Buka keranjang demo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>
+                <span>Keranjang</span><b class="cart-count" id="cartCount">0</b>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero shell" id="home">
+            <div class="hero-copy">
+                <p class="eyebrow">Pasar karya Nusantara</p>
+                <h1>Membeli karya,<br><em>membawa pulang cerita.</em></h1>
+                <p class="hero-description">Temukan benda istimewa yang dibuat sepenuh hati. Kenali perajinnya, bahan yang dipilih, dan cerita di balik setiap karya.</p>
+                <div class="hero-actions">
+                    <a class="button button-primary" href="#karya">Jelajahi karya <span aria-hidden="true">↗</span></a>
+                    <a class="text-action" href="#cerita">Tentang KaryaLokal <span aria-hidden="true">→</span></a>
+                </div>
+                <div class="hero-note"><span class="note-star" aria-hidden="true">✳</span><span>Dibuat dengan tangan, dirayakan dengan hati.</span></div>
+            </div>
+            <div class="hero-visual" aria-label="Pilihan karya artisan lokal">
+                <div class="hero-image-main"><img src="assets/nampan-rotan.jpg" alt="Nampan kayu ukir buatan perajin lokal"></div>
+                <div class="hero-image-inset"><img src="assets/vas-bumi.jpg" alt="Vas keramik buatan tangan"></div>
+                <div class="hero-seal"><span>BUATAN</span><strong>LOKAL</strong><span>SEPENUH HATI</span></div>
+                <p class="image-caption">Karya yang punya cerita <span aria-hidden="true">✳</span></p>
+            </div>
+        </section>
+
+        <section class="category-section shell" aria-labelledby="categoryHeading">
+            <div class="section-heading compact-heading">
+                <div><p class="eyebrow">Temukan yang kamu suka</p><h2 id="categoryHeading">Jelajahi kategori</h2></div>
+                <a class="text-action desktop-only" href="#karya">Semua karya <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="category-list" id="categoryList">
+                <button class="category-chip is-active" type="button" data-category="Semua">
+                    <span class="category-photo"><img src="assets/gelang-anyaman.jpg" alt=""></span><span>Semua karya</span>
+                </button>
+                <button class="category-chip" type="button" data-category="Aksesori">
+                    <span class="category-photo"><img src="assets/gelang-anyaman.jpg" alt=""></span><span>Aksesori</span>
+                </button>
+                <button class="category-chip" type="button" data-category="Keramik">
+                    <span class="category-photo"><img src="assets/vas-bumi.jpg" alt=""></span><span>Keramik</span>
+                </button>
+                <button class="category-chip" type="button" data-category="Fashion">
+                    <span class="category-photo"><img src="assets/selendang-lurik.jpg" alt=""></span><span>Tekstil</span>
+                </button>
+                <button class="category-chip" type="button" data-category="Anyaman">
+                    <span class="category-photo"><img src="assets/nampan-rotan.jpg" alt=""></span><span>Anyaman</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="catalog-section" id="karya">
+            <div class="shell">
+                <div class="section-heading catalog-heading">
+                    <div><p class="eyebrow">Pilihan minggu ini</p><h2>Karya untuk dikenang</h2><p class="section-subtitle">Koleksi pilihan dari tangan-tangan terampil Nusantara.</p></div>
+                    <label class="sort-control" for="sortSelect"><span>Urutkan</span>
+                        <select id="sortSelect" aria-label="Urutkan karya">
+                            <option value="featured">Pilihan kami</option>
+                            <option value="price-low">Harga terendah</option>
+                            <option value="price-high">Harga tertinggi</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="filter-row" role="group" aria-label="Filter karya">
+                    <button class="filter-button is-active" type="button" data-filter="Semua">Semua karya</button>
+                    <button class="filter-button" type="button" data-filter="Pilihan kurator">Pilihan kurator</button>
+                    <button class="filter-button" type="button" data-filter="Hadiah">Cocok untuk hadiah</button>
+                    <span class="result-count" id="resultCount" aria-live="polite"></span>
+                </div>
+
+                <div class="product-grid" id="productGrid"></div>
+                <p class="empty-state" id="emptyState" hidden>Tidak ada karya yang cocok. Coba kata kunci atau kategori lain.</p>
+            </div>
+        </section>
+
+        <section class="story-section" id="cerita">
+            <div class="shell story-layout">
+                <div class="story-image"><img src="assets/selendang-lurik.jpg" alt="Kain tenun lurik dengan warna alami"><span class="story-image-label">Dari studio para perajin</span></div>
+                <div class="story-copy">
+                    <p class="eyebrow">Tentang KaryaLokal</p>
+                    <h2>Setiap karya dimulai dari sepasang tangan.</h2>
+                    <p>KaryaLokal menghubungkan para artisan Indonesia dengan orang-orang yang menghargai cerita, keterampilan, dan proses di balik benda yang mereka buat.</p>
+                    <blockquote>“Saya membuat setiap karya dengan mengingat warna senja di kampung halaman.”</blockquote>
+                    <span class="story-signature">Cerita dari studio para perajin</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="shell footer-inner">
+            <a class="brand footer-brand" href="#home" aria-label="KaryaLokal, kembali ke atas">
+                <img src="assets/karyalokal-mark.png" alt=""><span>Karya<span class="brand-accent">Lokal</span><small>.id</small></span>
+            </a>
+            <p>Membeli karya, membawa pulang cerita.</p>
+            <span>© 2026 KaryaLokal.id</span>
+        </div>
+    </footer>
+
+    <dialog class="cart-dialog" id="cartDialog" aria-labelledby="cartTitle">
+        <div class="dialog-header"><div><p class="eyebrow">Etalase demo</p><h2 id="cartTitle">Keranjang</h2></div><button class="close-dialog" id="closeCart" type="button" aria-label="Tutup keranjang">×</button></div>
+        <div class="cart-lines" id="cartLines"></div>
+        <div class="cart-footer"><p>Keranjang ini hanya simulasi. Pesanan dan pembayaran belum tersedia.</p><div class="cart-total"><span>Total simulasi</span><strong id="cartTotal">Rp0</strong></div></div>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js" defer></script>
+</body>
+</html>
