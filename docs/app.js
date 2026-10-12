@@ -55,11 +55,43 @@ const cartLines = document.getElementById('cartLines');
 const cartCount = document.getElementById('cartCount');
 const cartTotal = document.getElementById('cartTotal');
 const toast = document.getElementById('toast');
+const accountDialog = document.getElementById('accountDialog');
+const accountContent = document.getElementById('accountContent');
+const accountLabel = document.getElementById('accountLabel');
 const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
 const storageKey = 'karyalokal-demo-cart';
+const accountKey = 'karyalokal-demo-customer';
+const wishlistKey = 'karyalokal-demo-wishlist';
+const ordersKey = 'karyalokal-demo-orders';
+const demoCustomer = { name: 'Alya Pratiwi', email: 'alya@demo.karyalokal.id', city: 'Jakarta Selatan' };
 let activeCategory = 'Semua';
 let activeTag = 'Semua';
+let activeAccountTab = 'profil';
+let pendingCheckout = false;
 let toastTimer;
+
+function loadArray(key) {
+    try {
+        const saved = JSON.parse(localStorage.getItem(key) || '[]');
+        return Array.isArray(saved) ? saved : [];
+    } catch {
+        return [];
+    }
+}
+
+function updateAccountHeader() {
+    accountLabel.textContent = customerSignedIn ? 'Alya' : 'Masuk demo';
+}
+
+function saveValue(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+    } catch {
+        showToast('Data demo tidak dapat disimpan di browser ini.');
+        return false;
+    }
+}
 
 function loadCart() {
     try {
@@ -71,6 +103,9 @@ function loadCart() {
 }
 
 let cart = loadCart();
+let wishlist = loadArray(wishlistKey);
+let orders = loadArray(ordersKey);
+let customerSignedIn = localStorage.getItem(accountKey) === 'true';
 
 function saveCart() {
     try {
@@ -89,6 +124,7 @@ function showToast(message) {
 
 function productCard(product) {
     const article = document.createElement('article');
+    const isSaved = wishlist.includes(product.id);
     article.className = 'product-card';
     article.dataset.productId = product.id;
     article.dataset.category = product.category;
@@ -98,6 +134,9 @@ function productCard(product) {
         <div class="product-photo">
             <img src="${product.image}" alt="${product.name}" loading="lazy">
             <span class="product-badge">Karya terverifikasi</span>
+            <button class="wishlist-toggle ${isSaved ? 'is-saved' : ''}" type="button" data-wishlist="${product.id}" aria-pressed="${isSaved}" aria-label="${isSaved ? 'Hapus dari' : 'Simpan ke'} wishlist: ${product.name}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.2-8.8 10.3-8.8 10.3S3.2 14 3.2 8.8A4.3 4.3 0 0 1 12 6.5a4.3 4.3 0 0 1 8.8 2.3Z"></path></svg>
+            </button>
         </div>
         <div class="product-info">
             <p class="artisan-name">Siti Rahma · ${product.origin}</p>
@@ -139,6 +178,7 @@ function renderCart() {
     cartCount.textContent = String(totalCount);
     cartCount.setAttribute('aria-label', `${totalCount} karya di keranjang demo`);
     cartTotal.textContent = rupiah.format(totalPrice);
+    document.getElementById('checkoutButton').disabled = totalCount === 0;
 
     if (!entries.length) {
         cartLines.innerHTML = '<p class="cart-empty">Keranjang demo masih kosong.</p>';
@@ -159,6 +199,133 @@ function renderCart() {
             </div>
             <button class="remove-line" type="button" data-remove="${product.id}" aria-label="Hapus ${product.name}">Hapus</button>
         </article>`).join('');
+}
+
+function renderAccount() {
+    accountLabel.textContent = customerSignedIn ? 'Alya' : 'Masuk demo';
+    if (!customerSignedIn) {
+        accountContent.innerHTML = `
+            <div class="demo-signin-panel">
+                <div class="demo-avatar" aria-hidden="true">AP</div>
+                <h3>Masuk sebagai customer demo</h3>
+                <p>Jelajahi profil, wishlist, dan riwayat pesanan contoh tanpa membuat akun sungguhan.</p>
+                <button class="demo-signin-button" type="button" data-demo-signin>Masuk sebagai customer demo</button>
+                <p class="demo-caption">Tidak meminta email atau kata sandi. Status demo disimpan di browser ini.</p>
+            </div>`;
+        return;
+    }
+
+    accountContent.innerHTML = `
+        <div class="customer-bar">
+            <div class="demo-avatar" aria-hidden="true">AP</div>
+            <div class="customer-details"><strong>${demoCustomer.name}</strong><span>Customer demo · data di browser ini</span></div>
+            <button class="signout-button" type="button" data-demo-signout>Keluar</button>
+        </div>
+        <div class="account-tabs" role="tablist" aria-label="Menu akun customer">
+            <button class="account-tab ${activeAccountTab === 'profil' ? 'is-active' : ''}" type="button" role="tab" aria-selected="${activeAccountTab === 'profil'}" data-account-tab="profil">Profil</button>
+            <button class="account-tab ${activeAccountTab === 'pesanan' ? 'is-active' : ''}" type="button" role="tab" aria-selected="${activeAccountTab === 'pesanan'}" data-account-tab="pesanan">Pesanan (${orders.length})</button>
+            <button class="account-tab ${activeAccountTab === 'wishlist' ? 'is-active' : ''}" type="button" role="tab" aria-selected="${activeAccountTab === 'wishlist'}" data-account-tab="wishlist">Wishlist (${wishlist.length})</button>
+        </div>
+        <div class="account-view" id="accountView" role="tabpanel"></div>`;
+    renderAccountView();
+}
+
+function renderAccountView() {
+    const view = document.getElementById('accountView');
+    if (!view) return;
+
+    if (activeAccountTab === 'pesanan') {
+        if (!orders.length) {
+            view.innerHTML = '<p class="account-empty">Belum ada pesanan demo. Isi keranjang lalu buat pesanan simulasi.</p>';
+            return;
+        }
+        view.innerHTML = `<div class="order-list">${orders.map((order) => `
+            <article class="order-entry">
+                <div class="order-entry-head"><strong>${order.id}</strong><span>${order.date}</span></div>
+                <p>${order.items.map((item) => `${item.name} × ${item.quantity}`).join('<br>')}</p>
+                <p class="order-total">${rupiah.format(order.total)} · Simulasi</p>
+            </article>`).join('')}</div>`;
+        return;
+    }
+
+    if (activeAccountTab === 'wishlist') {
+        const savedProducts = wishlist.map((id) => products.find((product) => product.id === id)).filter(Boolean);
+        if (!savedProducts.length) {
+            view.innerHTML = '<p class="account-empty">Wishlist demo masih kosong. Tekan ikon hati pada karya untuk menyimpannya.</p>';
+            return;
+        }
+        view.innerHTML = `<div class="saved-list">${savedProducts.map((product) => `
+            <article class="saved-entry">
+                <img src="${product.image}" alt="">
+                <div><strong>${product.name}</strong><span>${rupiah.format(product.price)}</span></div>
+                <button type="button" data-saved-add="${product.id}">Tambah ke keranjang</button>
+            </article>`).join('')}</div>`;
+        return;
+    }
+
+    view.innerHTML = `
+        <div class="profile-grid">
+            <div class="profile-field"><span>Nama</span><strong>${demoCustomer.name}</strong></div>
+            <div class="profile-field"><span>Role</span><strong>Customer demo</strong></div>
+            <div class="profile-field"><span>Email contoh</span><strong>${demoCustomer.email}</strong></div>
+            <div class="profile-field"><span>Kota contoh</span><strong>${demoCustomer.city}</strong></div>
+        </div>
+        <p class="account-note">Profil contoh ini hanya untuk melihat tampilan customer. Tidak terhubung ke akun atau data server.</p>`;
+}
+
+function updateWishlist(productId) {
+    if (!customerSignedIn) {
+        showToast('Masuk sebagai customer demo untuk menyimpan wishlist.');
+        accountDialog.showModal();
+        renderAccount();
+        return;
+    }
+    wishlist = wishlist.includes(productId)
+        ? wishlist.filter((id) => id !== productId)
+        : [...wishlist, productId];
+    saveValue(wishlistKey, wishlist);
+    renderProducts();
+    renderAccount();
+}
+
+function addToCart(productId) {
+    const product = products.find((item) => item.id === productId);
+    if (!product) return;
+    cart[product.id] = Math.min((Number(cart[product.id]) || 0) + 1, product.stock);
+    saveCart();
+    renderCart();
+    showToast(`${product.name} ditambahkan ke keranjang demo.`);
+}
+
+function placeDemoOrder() {
+    if (!customerSignedIn) {
+        pendingCheckout = true;
+        cartDialog.close();
+        renderAccount();
+        accountDialog.showModal();
+        showToast('Masuk demo dulu untuk membuat pesanan simulasi.');
+        return;
+    }
+
+    const items = Object.entries(cart)
+        .map(([id, quantity]) => ({ product: products.find((item) => item.id === id), quantity: Number(quantity) }))
+        .filter((entry) => entry.product && entry.quantity > 0);
+    if (!items.length) return;
+
+    const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const order = {
+        id: `KL-DEMO-${String(Date.now()).slice(-6)}`,
+        date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+        total,
+        items: items.map(({ product, quantity }) => ({ name: product.name, quantity })),
+    };
+    orders = [order, ...orders];
+    saveValue(ordersKey, orders);
+    cart = {};
+    saveCart();
+    renderCart();
+    cartDialog.close();
+    showToast(`Pesanan simulasi ${order.id} tercatat di browser.`);
 }
 
 function updateCategory(category) {
@@ -188,18 +355,58 @@ searchInput.addEventListener('input', renderProducts);
 sortSelect.addEventListener('change', renderProducts);
 
 productGrid.addEventListener('click', (event) => {
+    const wishlistButton = event.target.closest('[data-wishlist]');
+    if (wishlistButton) {
+        updateWishlist(wishlistButton.dataset.wishlist);
+        return;
+    }
     const button = event.target.closest('[data-add]');
     if (!button) return;
-    const product = products.find((item) => item.id === button.dataset.add);
-    if (!product) return;
-    cart[product.id] = Math.min((Number(cart[product.id]) || 0) + 1, product.stock);
-    saveCart();
-    renderCart();
-    showToast(`${product.name} ditambahkan ke keranjang demo.`);
+    addToCart(button.dataset.add);
 });
 
 document.getElementById('cartTrigger').addEventListener('click', () => cartDialog.showModal());
 document.getElementById('closeCart').addEventListener('click', () => cartDialog.close());
+document.getElementById('closeAccount').addEventListener('click', () => accountDialog.close());
+document.getElementById('accountTrigger').addEventListener('click', () => {
+    renderAccount();
+    accountDialog.showModal();
+});
+document.getElementById('checkoutButton').addEventListener('click', placeDemoOrder);
+
+accountContent.addEventListener('click', (event) => {
+    if (event.target.closest('[data-demo-signin]')) {
+        customerSignedIn = true;
+        try { localStorage.setItem(accountKey, 'true'); } catch { showToast('Status demo hanya berlaku selama halaman terbuka.'); }
+        activeAccountTab = 'profil';
+        renderAccount();
+        showToast('Masuk sebagai customer demo.');
+        if (pendingCheckout) {
+            pendingCheckout = false;
+            accountDialog.close();
+            cartDialog.showModal();
+        }
+        return;
+    }
+    if (event.target.closest('[data-demo-signout]')) {
+        customerSignedIn = false;
+        try { localStorage.removeItem(accountKey); } catch {}
+        renderAccount();
+        showToast('Keluar dari customer demo.');
+        return;
+    }
+    const tab = event.target.closest('[data-account-tab]');
+    if (tab) {
+        activeAccountTab = tab.dataset.accountTab;
+        renderAccount();
+        return;
+    }
+    const savedAdd = event.target.closest('[data-saved-add]');
+    if (savedAdd) {
+        addToCart(savedAdd.dataset.savedAdd);
+        cartDialog.showModal();
+    }
+});
 
 cartLines.addEventListener('click', (event) => {
     const removeButton = event.target.closest('[data-remove]');
@@ -219,5 +426,6 @@ cartLines.addEventListener('click', (event) => {
     renderCart();
 });
 
+updateAccountHeader();
 renderProducts();
 renderCart();

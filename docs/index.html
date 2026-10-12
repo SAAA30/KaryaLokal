@@ -31,6 +31,10 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
                 <input id="searchInput" type="search" placeholder="Cari karya..." autocomplete="off">
             </label>
+            <button class="account-trigger" id="accountTrigger" type="button" aria-label="Buka akun customer demo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.5-3.5 3.1-5.5 7-5.5s6.5 2 7 5.5"></path></svg>
+                <span id="accountLabel">Masuk demo</span>
+            </button>
             <button class="cart-trigger" id="cartTrigger" type="button" aria-label="Buka keranjang demo">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.5L21 8H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>
                 <span>Keranjang</span><b class="cart-count" id="cartCount">0</b>
@@ -134,7 +138,12 @@
     <dialog class="cart-dialog" id="cartDialog" aria-labelledby="cartTitle">
         <div class="dialog-header"><div><p class="eyebrow">Etalase demo</p><h2 id="cartTitle">Keranjang</h2></div><button class="close-dialog" id="closeCart" type="button" aria-label="Tutup keranjang">×</button></div>
         <div class="cart-lines" id="cartLines"></div>
-        <div class="cart-footer"><p>Keranjang ini hanya simulasi. Pesanan dan pembayaran belum tersedia.</p><div class="cart-total"><span>Total simulasi</span><strong id="cartTotal">Rp0</strong></div></div>
+        <div class="cart-footer"><p>Keranjang ini hanya simulasi. Pesanan dan pembayaran belum tersedia.</p><div class="cart-total"><span>Total simulasi</span><strong id="cartTotal">Rp0</strong></div><button class="checkout-button" id="checkoutButton" type="button" disabled>Buat pesanan demo</button></div>
+    </dialog>
+
+    <dialog class="account-dialog" id="accountDialog" aria-labelledby="accountTitle">
+        <div class="dialog-header"><div><p class="eyebrow">Area customer</p><h2 id="accountTitle">Akun KaryaLokal</h2></div><button class="close-dialog" id="closeAccount" type="button" aria-label="Tutup akun">×</button></div>
+        <div class="account-content" id="accountContent"></div>
     </dialog>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="app.js" defer></script>
