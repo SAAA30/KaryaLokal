@@ -1,0 +1,5 @@
+@extends('layouts.storefront')
+@section('title', 'Pusat Bantuan — KaryaLokal.id')
+@section('content')
+<section class="shell" style="padding:38px 0"><div class="eyebrow">Bantuan KaryaLokal</div><div style="display:flex;justify-content:space-between;align-items:end"><h1 class="page-title">Tiket bantuan</h1><a href="{{ route('support.customer.create') }}" class="primary">+ Buat tiket</a></div><div style="border-top:1px solid var(--line);margin-top:16px">@forelse($tickets as $ticket)<a href="{{ route('support.customer.show',$ticket) }}" style="display:grid;grid-template-columns:1fr auto;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)"><div><strong style="font-size:12px">{{ $ticket->ticket_number }} · {{ $ticket->subject }}</strong><div class="muted" style="font-size:10px;margin-top:4px">{{ ucfirst(str_replace('_',' ',$ticket->category)) }} · {{ $ticket->created_at->format('d M Y') }}</div></div><span class="verified">{{ str_replace('_',' ',$ticket->status) }}</span></a>@empty<p class="muted" style="padding:22px 0;font-size:12px">Belum ada tiket bantuan.</p>@endforelse</div><div class="pagination">{{ $tickets->links() }}</div></section>
+@endsection

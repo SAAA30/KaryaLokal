@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 170" role="img" aria-labelledby="title">
+  <title id="title">KaryaLokal.id</title>
+  <g fill="none" stroke="#60351f" stroke-linecap="round" stroke-linejoin="round" stroke-width="12">
+    <path d="M28 18v48m0 0 45-44M28 66l48 49M103 18v96m0-51c0-25 13-39 38-39h9"/>
+    <path d="M118 90c12-14 31-18 48-8 15 9 18 26 9 40-7 11-17 19-28 29-9 8-15 17-15 28" stroke="#c95b2d"/>
+    <path d="M192 18v46m0 0 42-46M192 64l46 51"/>
+    <path d="M254 27h27v27m55-27h-27V54m-55 55h27V82m55 27h-27V82" stroke-width="9"/>
+    <path d="M273 46h38v38h-38z" stroke-width="9"/>
+  </g>
+  <text x="342" y="111" fill="#60351f" font-family="Trebuchet MS, Arial, sans-serif" font-size="74" font-weight="700">Karya<tspan fill="#c95b2d">Lokal</tspan><tspan font-size="35">.id</tspan></text>
+</svg>
